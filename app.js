@@ -49,17 +49,39 @@ app.get("/listing/new", (req,res)=>{
     res.render("./listing/new.ejs");
 });
 
+app.post('/listing', async (req, res) => {
+    try {
+        const { title, description, image, price, location, country } = req.body.listing;
+
+        const newListing = new Listing({
+            title,
+            description,
+            image: {
+                filename: "listingImage",
+                url: image.url,
+            },
+            price,
+            location,
+            country
+        });
+
+        await newListing.save();
+        res.redirect('/listing');
+    } catch (error) {
+        console.error('Error saving listing:', error);
+        res.status(500).send('Error saving listing');
+    }
+});
+
+
+//show routes
 app.get("/listing/:id" , async (req,res)=>{
     let {id} = req.params;
     const listing = await Listing.findById(id);
     res.render("./listing/show.ejs", {listing});
 });
 
-app.post("/listing", async (req,res)=>{
-    const newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect("/listing");
-});
+
 
 //edit route
 
@@ -79,8 +101,9 @@ app.put("/listing/:id" ,async (req,res)=>{
 
 //delete route
 
-app.delete("/listing/:id" ,async (req,res)=>{
+app.delete("/listing/:id/delete" ,async (req,res)=>{
     let {id} = req.params;
-    await Listing.findByIdAndDelete(id);
+    let deleteListing = await Listing.findByIdAndDelete(id);
+    console.log(deleteListing);
     res.redirect("/listing");
 });

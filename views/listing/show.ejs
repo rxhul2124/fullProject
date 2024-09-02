@@ -15,9 +15,11 @@
                     <b>Price:</b> &#8377; <%=listing.price.toLocaleString("en-IN")%> /night<br>
                     <b>City:</b> <%=listing.location%><br>
                     <b>Country:</b> <%=listing.country%><br>
-                    <br>
+                    <br><br>
                     <a href="/listing/<%=listing._id%>/edit" class="btn add-btn">Edit</a>
-                    <a href="/listing/<%=listing._id%>?_method=DELETE" class="btn btn-dark">Delete</a>
+                    <form method="POST" action="/listing/<%=listing._id%>/delete?_method=DELETE">
+                        <button class="btn btn-dark">Delete</button> 
+                    </form>
                 </p>
                 </div>
               </div>

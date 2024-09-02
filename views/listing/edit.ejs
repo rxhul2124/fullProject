@@ -3,7 +3,7 @@
     <br>
     <div class="row">
         <div class="col-8 offset-2">
-            <form method="post" action="/listing">
+            <form method="POST" action="/listing/<%=listing._id%>?_method=PUT">
                 <h3>Edit your Listing</h3>
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>

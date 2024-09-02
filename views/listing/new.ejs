@@ -1,4 +1,5 @@
 <% layout("/layouts/boilerplate.ejs") %>
+<% layout("/layouts/boilerplate.ejs") %>
 <body>
     <br>
     <div class="row">
@@ -11,11 +12,11 @@
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
-                    <textarea name="listing[description]"  class="form-control"></textarea>
+                    <textarea name="listing[description]" class="form-control"></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="url" class="form-label">Image</label>
-                    <input type="text" name="listing[url]" placeholder="Enter the image addresss" class="form-control">
+                    <label for="url" class="form-label">Image URL</label>
+                    <input type="text" name="listing[image][url]" placeholder="Enter the image URL" class="form-control">
                 </div>
                 <div class="row">
                     <div class="mb-3 col-md-4">
@@ -24,12 +25,12 @@
                     </div>
                     <div class="mb-3 col-md-8">
                         <label for="location" class="form-label">City</label>
-                        <input type="text" name="listing[location]" placeholder="Enter the location%" class="form-control">
+                        <input type="text" name="listing[location]" placeholder="Enter the location" class="form-control">
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="country" class="form-label">Country</label>
-                    <input type="text" name="listing[country]" placeholder="Enter the country%" class="form-control">
+                    <input type="text" name="listing[country]" placeholder="Enter the country" class="form-control">
                 </div>
                 <button class="btn btn-dark add-btn">Add</button>
             </form>
