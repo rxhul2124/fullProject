@@ -6,10 +6,19 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-            <a class="nav-link active" href="/listing">Home</a>
-            <a class="nav-link" href="/listing">All listings</a>
-            <a class="nav-link" href="/listing/new">Add new listing</a>
+              <a class="nav-link active" href="/listing">Home</a>
+              <a class="nav-link" href="/listing">All listings</a>
+              <a class="nav-link" href="/listing/new">Add new listing</a>
+            </div>
+            <div class="navbar-nav ms-auto">
+              <% if(!currUser) {%>
+              <a class="nav-link active" href="/signUp">Sign up</a>
+              <a class="nav-link" href="/login">Log in</a>
+              <% } %>
+              <% if(currUser) {%>
+              <a class="nav-link" href="/logout">log out</a>
+              <% } %>
+            </div>
         </div>
-      </div>
     </div>
   </nav>

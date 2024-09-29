@@ -8,9 +8,13 @@ const ExpressError = require("./util/ExpressError.js");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
 
-const listing = require("./routes/listing.js");
-const review = require("./routes/review.js");
+const listingRoute = require("./routes/listing.js");
+const reviewRoute = require("./routes/review.js");
+const userRoute = require("./routes/user.js");
 
 app.engine("ejs", engine);  
 app.set("view engine" , "ejs");
@@ -46,21 +50,35 @@ const sessionOption = {
 app.use(session(sessionOption));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
+    res.locals.warning = req.flash("warning");
+    res.locals.error = req.flash("error");
+    res.locals.currUser = req.user;
     next();
 });
 
-// Root route
-app.get("/", (req, res) => {
-    res.send("Connection successful");
-});
+// // Root route
+// app.get("/", (req, res) => {
+//     res.send("Connection successful");
+// });
 
 // Router for listing routes
-app.use("/listing", listing);
+app.use("/listing", listingRoute);
 
 // Router for review routes
-app.use("/listing/:id/review", review);
+app.use("/listing/:id/review", reviewRoute);
+
+//Router for user route
+app.use("/", userRoute);
 
 // Default error middleware
 app.all("*", (req, res, next) => {

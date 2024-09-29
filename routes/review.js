@@ -1,46 +1,40 @@
 const express = require("express");
-const router = express.Router({ mergeParams: true }); // MergeParams to access the listing id from parent router
+const router = express.Router({ mergeParams: true }); 
 const Listing = require("../models/listing");
 const Review = require("../models/review");
 const wrapAsync = require("../util/wrapAsync");
 const ExpressError = require("../util/ExpressError");
-const { reviewSchema } = require("../schema.js");
+const {isLoggedIn, validateReview, isOwner} = require("../middleware.js");
 
-// Middleware to validate review input
-let validateReview = (req, res, next) => {
-    let { error } = reviewSchema.validate(req.body);
-    if (error) {
-        throw new ExpressError(400, error.details.map(el => el.message).join(", "));
-    } else {
-        next();
-    }
-};
+
 
 // Route to add a review 
-router.post("/", validateReview, wrapAsync(async (req, res) => {
+router.post("/", validateReview, isLoggedIn ,  wrapAsync(async (req, res) => {
     const { id } = req.params;  
     let listing = await Listing.findById(id);
     if (!listing) {
         throw new ExpressError(404, "Listing not found");
     }
 
-    const newReview = new Review(req.body.review);
+    let newReview = new Review(req.body.review);
+    newReview.author = req.user._id;
     listing.reviews.push(newReview);
     await newReview.save();
     await listing.save();
+    console.log(listing);
 
     req.flash("success" , "review added !!");
     res.redirect(`/listing/${id}`);
 }));
 
 // Route to delete a review 
-router.delete("/:reviewId", wrapAsync(async (req, res) => {
+router.delete("/:reviewId", isLoggedIn, wrapAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     
     await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
     
-    req.flash("success" , "Listing deleted !!");
+    req.flash("warning" , "Review deleted !!");
     res.redirect(`/listing/${id}`);
 }));
 
