@@ -1,4 +1,5 @@
 const Listing = require("./models/listing");
+const Review = require("./models/review.js");
 const ExpressError = require("./util/ExpressError.js");
 const {listingSchema, reviewSchema} = require("./schema.js");
 const review = require("./models/review.js");
@@ -29,6 +30,17 @@ module.exports.isOwner = async (req, res, next) =>{
     next();
 }
 
+module.exports.isReviewAuthor = async (req, res, next) => {
+    let {reviewId, id} = req.params;
+    let review = await Review.findById(reviewId);
+    if(!review.author._id.equals(res.locals.currUser._id)){
+        req.flash("error", "You don't have the permission !!");
+        return res.redirect(`/listing/${id}`);
+    }
+    next();
+    
+}
+
 module.exports.validateListing = (req, res, next)=>{
     let result = listingSchema.validate(req.body);
     if(result.error){
@@ -47,3 +59,4 @@ module.exports.validateReview = (req, res, next) => {
         next();
     }
 };
+

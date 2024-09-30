@@ -55,15 +55,14 @@
                         <div class="col-md-6 d-flex">
                             <div class="card mb-3 ms-2 w-100">
                                 <div class="card-body mb-2 ms-2 mt-2">
-                                    <h5 class="card-title "><%= author.username %></h5>
+                                    <h5 class="card-title "><%= review.author.username %></h5>
                                     <p class="card-text"><%= review.comment %></p>
                                     <p class="card-text"><%= review.rating %> <i class="fa-regular fa-star"></i></p>
                                 </div>
-                                <% if(currUser && currUser._id.equals(author._id)) { %>
+                                
                                   <form action="/listing/<%= listing._id %>/review/<%= review._id %>?_method=DELETE" method="POST" class="mb-2 ms-2">
                                     <button class="btn btn-sm btn-dark">Delete</button>
                                   </form>
-                                <% } %>
                             </div>
                         </div>
                     <% } %>
