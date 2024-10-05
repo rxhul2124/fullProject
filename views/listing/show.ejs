@@ -29,10 +29,21 @@
                 <% if(currUser){ %>
                 <h4>Leave a Review</h4>
                 <form action="/listing/<%= listing._id %>/review" method="POST" novalidate class="needs-validation">
-                    <div class="mb-2">
-                        <label for="rating" class="form-label">Rating</label>
-                        <input type="range" min="1" max="5" id="rating" name="review[rating]" class="form-range">
-                    </div>
+                    
+                    <fieldset class="starability-checkmark mb-2">
+                        <legend>Rating:</legend>
+                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+                        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                        <label for="first-rate1" title="Terrible">1 star</label>
+                        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                        <label for="first-rate2" title="Not good">2 stars</label>
+                        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                        <label for="first-rate3" title="Average">3 stars</label>
+                        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                        <label for="first-rate4" title="Very good">4 stars</label>
+                        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                        <label for="first-rate5" title="Amazing">5 stars</label>
+                      </fieldset>
                     <div class="mb-4">
                         <label for="comment" class="form-label mb-2">Comments</label><br>
                         <textarea name="review[comment]" class="form-control" id="comment" cols="30" rows="5" placeholder="Write about your experience" required></textarea>
@@ -55,14 +66,13 @@
                         <div class="col-md-6 d-flex">
                             <div class="card mb-3 ms-2 w-100">
                                 <div class="card-body mb-2 ms-2 mt-2">
-                                    <h5 class="card-title "><%= review.author.username %></h5>
+                                    <h5 class="card-title ">@<%= review.author.username %></h5>
+                                    <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
                                     <p class="card-text"><%= review.comment %></p>
-                                    <p class="card-text"><%= review.rating %> <i class="fa-regular fa-star"></i></p>
                                 </div>
-                                
-                                  <form action="/listing/<%= listing._id %>/review/<%= review._id %>?_method=DELETE" method="POST" class="mb-2 ms-2">
+                                <form action="/listing/<%= listing._id %>/review/<%= review._id %>?_method=DELETE" method="POST" class="mb-2 ms-2">
                                     <button class="btn btn-sm btn-dark">Delete</button>
-                                  </form>
+                                </form>
                             </div>
                         </div>
                     <% } %>

@@ -11,14 +11,15 @@ module.exports.renderNew =  (req,res)=>{
 
 module.exports.newListing = async (req, res, next) => {
     const { title, description, image, price, location, country } = req.body.listing;
-
+    let path = req.file.path;
+    let filename = req.file.filename;
 
     const newListing = new Listing({
         title,
         description,
         image: {
-            filename: "listingImage",
-            url: image.url,
+            filename: filename,
+            url: path,
         },
         price,
         location,
@@ -54,14 +55,18 @@ module.exports.editListing = async (req, res, next) => {
     const updatedListing = await Listing.findByIdAndUpdate(id, {
         title,
         description,
-        image: {
-            filename: "listingImage", 
-            url: image.url,
-        },
         price,
         location,
         country
     });
+
+    if(typeof req.file !== "undefined"){
+        let path = req.file.path;
+        let filename = req.file.filename;
+        updatedListing.image.filename = filename;
+        updatedListing.image.url = path;
+        await updatedListing.save();
+    } 
     
     req.flash("success" , "Listing updated !!");
     res.redirect(`/listing/${id}`); 
