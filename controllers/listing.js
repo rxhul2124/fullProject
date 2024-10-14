@@ -10,25 +10,58 @@ module.exports.renderNew =  (req,res)=>{
 }
 
 module.exports.newListing = async (req, res, next) => {
-    const { title, description, image, price, location, country } = req.body.listing;
+    const { title, description, price, location, country } = req.body.listing;
     let path = req.file.path;
     let filename = req.file.filename;
 
-    const newListing = new Listing({
-        title,
-        description,
-        image: {
-            filename: filename,
-            url: path,
-        },
-        price,
-        location,
-        country
-    });
-    newListing.owner = req.user._id;
-    await newListing.save();
-    req.flash("success" , "New listing added !!");
-    res.redirect('/listing');
+    try {
+        
+        const fetch = (await import('node-fetch')).default;
+
+        
+        const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
+
+        const response = await fetch(geocodeUrl);
+        const data = await response.json();
+
+        if (data.length > 0) {
+            
+            const lat = data[0].lat;
+            const lon = data[0].lon;
+            console.log(lat, lon);
+
+            
+            const newListing = new Listing({
+                title,
+                description,
+                image: {
+                    filename: filename,
+                    url: path,
+                },
+                price,
+                location: {
+                    name: location,  
+                    lat: lat,        
+                    lon: lon        
+                },
+                country
+            });
+
+            newListing.owner = req.user._id; 
+            await newListing.save();
+            console.log(newListing); 
+
+            req.flash("success", "New listing added with geocoded location!");
+            res.redirect('/listing');
+        } else {
+            req.flash('error', 'Geocoding failed. Location not found.');
+            res.redirect('/listing/new');
+        }
+    } catch (error) {
+        console.error('Geocoding error:', error);
+        req.flash('error', 'Failed to geocode the location.');
+        res.redirect('/listing/new');
+    }
 }
 
 module.exports.showListing = async (req,res)=>{

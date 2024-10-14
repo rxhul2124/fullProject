@@ -12,7 +12,7 @@
                         <b>Posted By: </b><%= listing.owner ? listing.owner.username : 'Unknown' %><br>
                         <b>Description: </b><%= listing.description %><br>
                         <b>Price:</b> &#8377; <%= listing.price.toLocaleString("en-IN") %> /night<br>
-                        <b>City:</b> <%= listing.location %><br>
+                        <b>City:</b> <%= listing.location.name %><br>
                         <b>Country:</b> <%= listing.country %><br>
                         <br><br>
                         <% if(currUser && currUser._id.equals(listing.owner._id)){ %>
@@ -80,6 +80,30 @@
                     <p>No reviews yet.</p>
                 <% } %>
             </div>
+            <div class="row col-6 offset-3 mb-4">
+                <hr>
+                <h4>Where you’ll be</h4>
+                <div id="map" style="height: 400px; width: 100%;"></div>
+            </div>
         </div>
     </div>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var lat = <%= JSON.stringify(listing.location.lat) %>;
+        var lon = <%= JSON.stringify(listing.location.lon) %>;
+       
+        var map = L.map('map').setView([lon,lat], 15);
+
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        
+        var marker = L.marker([lat, lon]).addTo(map);
+        marker.bindPopup("<b>Hello</b><br>You will be here").openPopup();
+    });
+</script>
+

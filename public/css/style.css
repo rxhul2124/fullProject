@@ -98,3 +98,7 @@ body{
     height: 40vh;
     width: 40vw !important; 
 }
+
+#map{
+   border-radius: 1rem; 
+}
